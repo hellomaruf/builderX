@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import logo from "../../../public/assets/img/builderx.png";
+import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 
 type FormValues = {
   email: string;
@@ -46,8 +49,8 @@ const LoginPage = () => {
         </div>
 
         {/* Heading */}
-        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-1">
-          Sign in with email
+        <h2 className="text-center text-xl font-medium text-gray-800 mb-3 pt-4">
+          Sign in your account
         </h2>
         <p className="text-center text-gray-500 text-sm mb-8">
           Make a new doc to bring your words, data, and teams together. For free
@@ -91,7 +94,7 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-b from-gray-800 to-gray-900 text-white rounded-lg font-semibold shadow  transition"
+            className="w-full py-3 bg-[#5271FF] hover:bg-opacity-90 text-white rounded-lg font-semibold shadow  transition"
           >
             Get Started
           </button>
@@ -107,12 +110,17 @@ const LoginPage = () => {
         {/* Social Buttons */}
         <div className="flex justify-center gap-4">
           <button className="flex items-center justify-center w-[100px] h-12 bg-white rounded-lg border hover:bg-gray-50 shadow-sm">
-            <Image
-              src="https://www.svgrepo.com/show/355037/google.svg"
-              alt="Google"
-              width={24}
-              height={24}
-            />
+            <FcGoogle className="text-2xl" />
+          </button>
+          <button
+            onClick={() =>
+              signIn("github", {
+                callbackUrl: "http://localhost:3000/dashboard",
+              })
+            }
+            className="flex items-center justify-center w-[100px] h-12 bg-white rounded-lg border hover:bg-gray-50 shadow-sm"
+          >
+            <FaGithub className="text-2xl" />
           </button>
         </div>
       </div>
