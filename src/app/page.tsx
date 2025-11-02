@@ -1,8 +1,10 @@
+import Hero from "@/components/home/Hero";
+
 const HomePage = () => {
   return (
-    <div>
-      <h1 className="text-4xl text-center mt-10">Welcome To Home Page</h1>
-    </div>
+    <>
+      <Hero />
+    </>
   );
 };
 
