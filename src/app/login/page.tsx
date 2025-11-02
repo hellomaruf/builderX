@@ -109,7 +109,14 @@ const LoginPage = () => {
 
         {/* Social Buttons */}
         <div className="flex justify-center gap-4">
-          <button className="flex items-center justify-center w-[100px] h-12 bg-white rounded-lg border hover:bg-gray-50 shadow-sm">
+          <button
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: "http://localhost:3000/dashboard",
+              })
+            }
+            className="flex items-center justify-center w-[100px] h-12 bg-white rounded-lg border hover:bg-gray-50 shadow-sm"
+          >
             <FcGoogle className="text-2xl" />
           </button>
           <button
