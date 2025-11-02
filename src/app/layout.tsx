@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavbarWrapper from "@/components/shared/NavbarWrapper";
+import FooterWrapper from "@/components/shared/FooterWrapper";
 
 export const metadata: Metadata = {
   title: "Next Auth",
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <NavbarWrapper />
         <div className="min-h-screen ">{children}</div>
+        <FooterWrapper />
       </body>
     </html>
   );
