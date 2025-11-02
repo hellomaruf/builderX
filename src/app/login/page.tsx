@@ -96,7 +96,7 @@ const LoginPage = () => {
             type="submit"
             className="w-full py-3 bg-[#5271FF] hover:bg-opacity-90 text-white rounded-lg font-semibold shadow  transition"
           >
-            Get Started
+            Sign In
           </button>
         </form>
 

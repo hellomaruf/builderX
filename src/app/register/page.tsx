@@ -1,110 +1,131 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import logo from "../../../public/assets/img/builderx.png";
+import { registerUser } from "@/utils/actions/registerUser";
+import { useRouter } from "next/navigation";
 
-export type UserData = {
+export type registerValues = {
   username: string;
   email: string;
   password: string;
 };
 
-const RegisterPage = () => {
+const LoginPage = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserData>();
+  } = useForm<registerValues>();
 
-  const onSubmit = async (data: UserData) => {
-    console.log(data);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
+  const onSubmit = async (data: registerValues) => {
     try {
-    } catch (err: any) {
-      console.error(err.message);
-      throw new Error(err.message);
+      const res = await registerUser(data);
+      if (res.success) {
+        router.push("/login");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error("Unknown error");
     }
   };
 
   return (
-    <div className="my-10">
-      <h1 className="text-center text-4xl font-bold mb-5">
-        Register <span className="text-teal-500">Now</span>
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-200 to-white relative overflow-hidden">
+      {/* Decorative background blur circles */}
+      <div className="absolute w-[800px] h-[800px] bg-sky-100 rounded-full blur-3xl top-[-300px] left-[-300px] opacity-50"></div>
+      <div className="absolute w-[600px] h-[600px] bg-sky-50 rounded-full blur-2xl bottom-[-200px] right-[-200px] opacity-60"></div>
+
+      {/* Login Card */}
+      <div className="relative z-10 bg-white/60 backdrop-blur-xl rounded-2xl shadow-xl border border-white/30 p-8 w-[90%] max-w-md">
+        {/* Icon */}
+        <div className="flex justify-center mb-4">
           <Image
-            src="https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-135.jpg?t=st=1710081713~exp=1710085313~hmac=f637c194f1f143e63a84950cbf978997453777c872adf4aebbbecdaa445601a1&w=740"
-            width={500}
-            height={200}
-            alt="login page"
-            className="w-full h-[85%] object-cover"
-          />
+            src={logo}
+            alt="logo"
+            height={600}
+            width={600}
+            className="w-[140px]"
+          ></Image>
         </div>
 
-        <div className="w-[80%] mx-auto bg-white p-6 shadow-lg rounded-lg">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                {...register("username")}
-                placeholder="User Name"
-                className="w-full p-3 border border-gray-300 rounded "
-                required
-              />
-            </div>
+        {/* Heading */}
+        <h2 className="text-center text-xl font-medium text-gray-800 mb-3 pt-4">
+          Sign Up your account
+        </h2>
+        <p className="text-center text-gray-500 text-sm mb-8">
+          Make a new doc to bring your words, data, and teams together. For free
+        </p>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                {...register("email")}
-                placeholder="Email"
-                className="w-full p-3 border border-gray-300 rounded "
-                required
-              />
-            </div>
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <input
+              type="name"
+              {...register("username", { required: "Name is required" })}
+              placeholder="Name"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none placeholder-gray-400 bg-white/70"
+            />
+            {errors.username && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <input
+              type="email"
+              {...register("email", { required: "Email is required" })}
+              placeholder="Email"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none placeholder-gray-400 bg-white/70"
+            />
+            {errors.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
-            <div className="mb-6">
-              <label className="block text-gray-700 font-medium mb-2">
-                Password
-              </label>
-              <input
-                {...register("password")}
-                type="password"
-                placeholder="Password"
-                className="w-full p-3 border border-gray-300 rounded "
-                required
-              />
-            </div>
+          <div className="relative">
+            <input
+              type="password"
+              {...register("password", { required: "Password is required" })}
+              placeholder="Password"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none placeholder-gray-400 bg-white/70"
+            />
+            <Link
+              href="/forgot-password"
+              className="absolute right-3 top-3 text-sm text-sky-500 hover:underline"
+            >
+              Forgot password?
+            </Link>
+            {errors.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-            <div className="mb-4">
-              <button
-                type="submit"
-                className="w-full border border-teal-500 text-teal-500 font-semibold py-2 px-4 rounded-md shadow-md hover:bg-teal-500 hover:text-black"
-              >
-                Register
-              </button>
-            </div>
-
-            <p className="text-center text-gray-600">
-              Already have an account?{" "}
-              <Link className="text-teal-500 hover:underline" href="/login">
-                Login
-              </Link>
-            </p>
-          </form>
-        </div>
+          <button
+            type="submit"
+            className="w-full py-3 bg-[#5271FF] hover:bg-opacity-90 text-white rounded-lg font-semibold shadow  transition"
+          >
+            Sign Up
+          </button>
+        </form>
       </div>
     </div>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
