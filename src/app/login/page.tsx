@@ -8,13 +8,17 @@ import logo from "../../../public/assets/img/builderx.png";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { loginUser } from "@/utils/actions/loginUser";
+import { useRouter } from "next/navigation";
 
-type FormValues = {
+export type FormValues = {
   email: string;
   password: string;
 };
 
 const LoginPage = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -26,7 +30,18 @@ const LoginPage = () => {
   if (!mounted) return null;
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data);
+    try {
+      const res = await loginUser(data);
+      if (res.success) {
+        localStorage.setItem("accessToken", res.accessToken);
+        router.push("/dashboard");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error("Unknown error");
+    }
   };
 
   return (
@@ -130,6 +145,13 @@ const LoginPage = () => {
             <FaGithub className="text-2xl" />
           </button>
         </div>
+
+        <p className="text-[14px] text-center pt-5">
+          If you are not Logged in, Please{" "}
+          <Link className="text-blue-500 underline" href={"/register"}>
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );
