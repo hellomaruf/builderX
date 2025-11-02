@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import logo from "../../../public/assets/img/builderx.png";
 
 type FormValues = {
   email: string;
@@ -35,22 +36,13 @@ const LoginPage = () => {
       <div className="relative z-10 bg-white/60 backdrop-blur-xl rounded-2xl shadow-xl border border-white/30 p-8 w-[90%] max-w-md">
         {/* Icon */}
         <div className="flex justify-center mb-4">
-          <div className="bg-white p-3 rounded-xl shadow">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
+          <Image
+            src={logo}
+            alt="logo"
+            height={600}
+            width={600}
+            className="w-[140px]"
+          ></Image>
         </div>
 
         {/* Heading */}
