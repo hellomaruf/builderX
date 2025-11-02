@@ -1,15 +1,32 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import logo from "../../../public/assets/img/builderx.png";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 
-export default function Navbar() {
+export default function Navbar({ session }: { session: Session | null }) {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // example (tumi real auth state use korba firebase / next-auth theke)
-  const isLoggedIn = true;
-  const profileImg = "https://i.pravatar.cc/150?img=3"; // user profile image
+  const profileImg = "https://i.pravatar.cc/150?img=3";
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <nav className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -26,23 +43,26 @@ export default function Navbar() {
               height={600}
               width={600}
               className="w-[140px]"
-            ></Image>
+            />
           </Link>
         </div>
 
         {/* right side */}
         <div className="flex items-center gap-4">
-          {!isLoggedIn && (
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+          {!session?.user && (
+            <Link
+              href={"/login"}
+              className="px-6 py-2 bg-[#5271ff] hover:bg-opacity-90 text-white rounded-lg"
+            >
               Login
-            </button>
+            </Link>
           )}
 
           {/* when logged in */}
-          {isLoggedIn && (
-            <div className="relative">
+          {session?.user && (
+            <div ref={dropdownRef} className="relative">
               <Image
-                src={profileImg}
+                src={session?.user?.image || profileImg}
                 width={35}
                 height={35}
                 alt="profile"
@@ -51,13 +71,24 @@ export default function Navbar() {
               />
 
               {open && (
-                <div className="absolute right-0 mt-2 bg-white border shadow-lg w-36 rounded-lg py-2">
+                <div className="absolute right-0 mt-2 bg-white border shadow-lg w-40 rounded-lg py-2">
+                  <h6 className="text-left text-[15px] px-2 py-2 rounded-md bg-[#5271ff] text-white mx-2">
+                    {session?.user?.name || "User"}
+                  </h6>
                   <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
                     Dashboard
                   </button>
-                  <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-500">
-                    Logout
-                  </button>
+
+                  {session?.user ? (
+                    <button
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-500"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </div>
               )}
             </div>
