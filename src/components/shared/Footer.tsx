@@ -19,8 +19,8 @@ export default function Footer() {
                 className="w-[140px] mb-4"
               />
             </Link>
-            <h2 className="font-semibold text-xl leading-snug">
-              We growing up your business <br /> with personal AI manager.
+            <h2 className="font-normal text-lg text-gray-800 leading-snug">
+              We growing up your business <br /> with BuilderX website Builder.
             </h2>
 
             <p className="text-gray-500 mt-4">Maxwell, 2023.</p>
