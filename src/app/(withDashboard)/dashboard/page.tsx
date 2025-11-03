@@ -1,14 +1,22 @@
-import { authOptions } from "@/utils/authOptions";
-import { getServerSession } from "next-auth";
+"use client";
 
-const DashboardPage = async () => {
-  const session = await getServerSession(authOptions);
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+const DashboardPage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
+  // const session = getServerSession(authOptions);
 
   return (
     <div>
-      <h1 className="text-4xl text-center mt-10">
-        Welcome {session?.user?.name}
-      </h1>
+      <h1 className="text-4xl text-center mt-10">Welcome bro</h1>
     </div>
   );
 };

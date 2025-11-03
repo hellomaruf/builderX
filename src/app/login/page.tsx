@@ -34,7 +34,7 @@ const LoginPage = () => {
       const res = await loginUser(data);
       if (res.success) {
         localStorage.setItem("accessToken", res.accessToken);
-        router.push("/dashboard");
+        router.push("/builder");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {

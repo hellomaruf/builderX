@@ -123,6 +123,12 @@ const LoginPage = () => {
             Sign Up
           </button>
         </form>
+        <p className="text-[14px] text-center pt-5">
+          If you are already Logged in, Please{" "}
+          <Link className="text-blue-500 underline" href={"/login"}>
+            Sign In
+          </Link>
+        </p>
       </div>
     </div>
   );
