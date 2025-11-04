@@ -1,33 +1,51 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+type PreviewItem = {
+  id: string;
+  type: string;
+};
+
+type PaletteItem = {
+  type: string;
+  label: string;
+};
 
 export default function BuilderPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
     if (!token) {
       router.push("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
-  const [previewItems, setPreviewItems] = useState([]);
-  const previewRef = useRef(null);
 
-  const palette = [
+  const [previewItems, setPreviewItems] = useState<PreviewItem[]>([]);
+  const previewRef = useRef<HTMLDivElement | null>(null);
+
+  const palette: PaletteItem[] = [
     { type: "Navbar", label: "Navbar" },
     { type: "Hero", label: "Hero" },
     { type: "Footer", label: "Footer" },
   ];
 
-  function createInstance(type) {
+  function createInstance(type: string): PreviewItem {
     return {
       id: `${type}_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
       type,
     };
   }
 
-  function onDragStartPalette(e, type) {
+  function onDragStartPalette(
+    e: React.DragEvent<HTMLDivElement>,
+    type: string
+  ) {
     e.dataTransfer.setData(
       "text/plain",
       JSON.stringify({ from: "palette", type })
@@ -35,7 +53,10 @@ export default function BuilderPage() {
     e.dataTransfer.effectAllowed = "copy";
   }
 
-  function onDragStartPreviewItem(e, index) {
+  function onDragStartPreviewItem(
+    e: React.DragEvent<HTMLDivElement>,
+    index: number
+  ) {
     e.dataTransfer.setData(
       "text/plain",
       JSON.stringify({ from: "preview", index })
@@ -43,16 +64,16 @@ export default function BuilderPage() {
     e.dataTransfer.effectAllowed = "move";
   }
 
-  function onDragOverPreview(e) {
+  function onDragOverPreview(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
   }
 
-  function onDropToPreview(e) {
+  function onDropToPreview(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     const raw = e.dataTransfer.getData("text/plain");
     if (!raw) return;
-    let payload;
+    let payload: any;
     try {
       payload = JSON.parse(raw);
     } catch (err) {
@@ -60,14 +81,20 @@ export default function BuilderPage() {
     }
 
     if (payload.from === "palette") {
-      const inst = createInstance(payload.type);
+      const inst = createInstance(String(payload.type));
       setPreviewItems((p) => [...p, inst]);
     }
 
     if (payload.from === "preview") {
-      const sourceIndex = payload.index;
+      const sourceIndex = Number(payload.index);
       setPreviewItems((items) => {
         const newItems = items.slice();
+        if (
+          isNaN(sourceIndex) ||
+          sourceIndex < 0 ||
+          sourceIndex >= newItems.length
+        )
+          return newItems;
         const [moved] = newItems.splice(sourceIndex, 1);
         newItems.push(moved);
         return newItems;
@@ -75,11 +102,14 @@ export default function BuilderPage() {
     }
   }
 
-  function onDropToPreviewItem(e, targetIndex) {
+  function onDropToPreviewItem(
+    e: React.DragEvent<HTMLDivElement>,
+    targetIndex: number
+  ) {
     e.preventDefault();
     const raw = e.dataTransfer.getData("text/plain");
     if (!raw) return;
-    let payload;
+    let payload: any;
     try {
       payload = JSON.parse(raw);
     } catch (err) {
@@ -87,7 +117,7 @@ export default function BuilderPage() {
     }
 
     if (payload.from === "palette") {
-      const inst = createInstance(payload.type);
+      const inst = createInstance(String(payload.type));
       setPreviewItems((p) => {
         const newArr = p.slice();
         newArr.splice(targetIndex, 0, inst);
@@ -96,10 +126,15 @@ export default function BuilderPage() {
     }
 
     if (payload.from === "preview") {
-      const sourceIndex = payload.index;
+      const sourceIndex = Number(payload.index);
       setPreviewItems((items) => {
         const newItems = items.slice();
-        if (sourceIndex < 0 || sourceIndex >= newItems.length) return newItems;
+        if (
+          isNaN(sourceIndex) ||
+          sourceIndex < 0 ||
+          sourceIndex >= newItems.length
+        )
+          return newItems;
         const [moved] = newItems.splice(sourceIndex, 1);
         const insertIndex =
           sourceIndex < targetIndex ? targetIndex - 1 : targetIndex;
@@ -109,16 +144,16 @@ export default function BuilderPage() {
     }
   }
 
-  function onDragOverPreviewItem(e) {
+  function onDragOverPreviewItem(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   }
 
-  function removeItem(id) {
+  function removeItem(id: string) {
     setPreviewItems((p) => p.filter((it) => it.id !== id));
   }
 
-  function renderComponentByType(type) {
+  function renderComponentByType(type: string) {
     switch (type) {
       case "Navbar":
         return (
@@ -192,6 +227,7 @@ export default function BuilderPage() {
             </pre>
           </div>
         </aside>
+
         <main className="col-span-12 md:col-span-9">
           <div className="bg-white rounded shadow p-4">
             <div className="mb-3 flex items-center justify-between">
@@ -200,6 +236,7 @@ export default function BuilderPage() {
                 Drag from left and drop here
               </div>
             </div>
+
             <div
               ref={previewRef}
               onDragOver={onDragOverPreview}
@@ -211,6 +248,7 @@ export default function BuilderPage() {
                   Drop components here to build the page
                 </div>
               )}
+
               <div className="space-y-4">
                 {previewItems.map((item, idx) => (
                   <div
@@ -240,6 +278,7 @@ export default function BuilderPage() {
                 ))}
               </div>
             </div>
+
             <div className="mt-4 flex gap-2">
               <button
                 onClick={() => {
@@ -252,6 +291,7 @@ export default function BuilderPage() {
               >
                 Export JSON
               </button>
+
               <button
                 onClick={() => setPreviewItems([])}
                 className="px-4 py-2 border rounded"

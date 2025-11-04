@@ -100,26 +100,23 @@
 // }
 
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../../../public/assets/img/builderx.png";
+import { Session } from "next-auth";
 
-export default function Navbar() {
-  const profileImg = "https://i.pravatar.cc/150?img=3";
+type NavbarProps = {
+  session: Session | null;
+};
+
+export default function Navbar({ session }: NavbarProps) {
+  const profileImg = session?.user?.image || "https://i.pravatar.cc/150?img=3";
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!session);
 
   // click outside
   useEffect(() => {
@@ -136,6 +133,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
+    // remove token or invalidate session here
     localStorage.removeItem("accessToken");
     setIsLoggedIn(false);
     window.location.href = "/login";
@@ -186,7 +184,7 @@ export default function Navbar() {
               {open && (
                 <div className="absolute right-0 mt-2 bg-white border shadow-lg w-40 rounded-lg py-2">
                   <h6 className="text-left text-[15px] px-2 py-2 rounded-md bg-[#5271ff] text-white mx-2">
-                    User
+                    {session?.user?.name || "User"}
                   </h6>
 
                   <Link

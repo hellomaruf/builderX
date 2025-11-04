@@ -4,13 +4,12 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import { Session } from "next-auth";
 
-export default function NavbarWrapper({
-  session,
-}: {
+export type NavbarWrapperProps = {
   session: Session | null;
-}) {
-  const pathname = usePathname();
+};
 
+export default function NavbarWrapper({ session }: NavbarWrapperProps) {
+  const pathname = usePathname();
   const hideNavbarRoutes = ["/login", "/register"];
 
   if (hideNavbarRoutes.includes(pathname)) {
