@@ -20,6 +20,7 @@ export default async function RootLayout({
   return (
     <html lang="en" data-theme="light">
       <body>
+        {/* @ts-expect-error Server to Client prop */}
         <NavbarWrapper session={session} />
         <div className="min-h-screen ">{children}</div>
         <FooterWrapper />

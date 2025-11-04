@@ -105,20 +105,28 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../../../public/assets/img/builderx.png";
-import { Session } from "next-auth";
 
-type NavbarProps = {
-  session: Session | null;
-};
-
-export default function Navbar({ session }: NavbarProps) {
-  const profileImg = session?.user?.image || "https://i.pravatar.cc/150?img=3";
+export default function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [profileImg, setProfileImg] = useState(
+    "https://i.pravatar.cc/150?img=3"
+  );
+  const [userName, setUserName] = useState("User");
 
-  const [isLoggedIn, setIsLoggedIn] = useState(!!session);
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      setIsLoggedIn(true);
 
-  // click outside
+      const storedName = localStorage.getItem("userName");
+      const storedImg = localStorage.getItem("userImg");
+      if (storedName) setUserName(storedName);
+      if (storedImg) setProfileImg(storedImg);
+    }
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -133,8 +141,9 @@ export default function Navbar({ session }: NavbarProps) {
   }, []);
 
   const handleLogout = () => {
-    // remove token or invalidate session here
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userImg");
     setIsLoggedIn(false);
     window.location.href = "/login";
   };
@@ -161,6 +170,7 @@ export default function Navbar({ session }: NavbarProps) {
               Login
             </Link>
           )}
+
           {isLoggedIn && (
             <Link
               href="/builder"
@@ -184,7 +194,7 @@ export default function Navbar({ session }: NavbarProps) {
               {open && (
                 <div className="absolute right-0 mt-2 bg-white border shadow-lg w-40 rounded-lg py-2">
                   <h6 className="text-left text-[15px] px-2 py-2 rounded-md bg-[#5271ff] text-white mx-2">
-                    {session?.user?.name || "User"}
+                    {userName}
                   </h6>
 
                   <Link

@@ -88,7 +88,7 @@ export default function Clients({ clients }: Clients) {
           <div className="flex items-center">
             {combinedClients.map((item, index) => (
               <div
-                className="bg-white mr-[20px] lg:mr-[30px] border border-[#00000026] rounded-[10px] h-[80px] lg:h-[112px] px-4 lg:px-8 flex items-center justify-center hover:scale-105 transition-transform duration-300"
+                className="bg-white mr-[20px] lg:mr-[30px] border border-[#00000026] rounded-[10px] h-[80px] lg:h-[112px] px-4 lg:px-8 flex items-center justify-center hover:scale-100 transition-transform duration-300"
                 key={index}
               >
                 <Image
@@ -108,7 +108,7 @@ export default function Clients({ clients }: Clients) {
             <div className="flex items-center">
               {combinedClients.map((item, index) => (
                 <div
-                  className="bg-white mr-[20px] lg:mr-[30px] border border-[#00000026] rounded-[10px] h-[80px] lg:h-[112px] px-4 lg:px-8 flex items-center justify-center hover:scale-105 transition-transform duration-300"
+                  className="bg-white mr-[20px] lg:mr-[30px] border border-[#00000026] rounded-[10px] h-[80px] lg:h-[112px] px-4 lg:px-8 flex items-center justify-center hover:scale-100 transition-transform duration-300"
                   key={index}
                 >
                   <Image
